@@ -1,9 +1,9 @@
 dub
 ==============
 
-Like du, but sorts your output by size. Compare:
+dub is du with -h human readable output sorted by size. Compare:
 
-### du
+### du:
 
     > du -h -d 1 
       0B	./Colloquy Transcripts
@@ -15,13 +15,19 @@ Like du, but sorts your output by size. Compare:
 
 ### dub:
 
-    > dub
+    > dub -h -d 1
           37.0G .
           23.0G ./Personal
           14.0G ./Library
          673.0M ./Work
            0.0B ./Colloquy Transcripts
 
-## options      
+## SYNOPSIS
+     du [-H | -L | -P] [-a | -s | -d depth] [-c] [-h | -k | -m | -g] [-x]
+        [-I mask] [file ...] -G 
 
-    -c Enable colorized output. 
+## DESCRIPTION
+
+    -G Enable colorized output.
+
+'man du' for details

@@ -1,66 +1,83 @@
 #!/usr/bin/ruby
 
 color_highlighting = false
-  
+sort_output = false
+
+if ARGV.include?("-h") and !ARGV.include?("-k") and !ARGV.include?("-m") and !ARGV.include?("-g")
+  sort_output = true
+end
+
+if ARGV.include?("-G")
+  color_highlighting = true
+  ARGV.delete("-G")
+end
+ 
+args = "" 
 ARGV.each do |arg|
-  if arg == '-c'
-    color_highlighting = true
+  args += arg + " "
+end
+
+du = "du " + args
+duout = `#{du}`
+
+if sort_output
+  
+  comps = []
+  duout.each do |l|
+    l =~ /\s*(\d+(\.\d+)?)(\w)\s+(.*)$/
+    size = $1
+    unit = $3
+    path = $4
+    comps << [size.to_f, unit, path]
   end
-end
 
-duout = `du -h -d 1`
+  unit_to_mult = {
+    'B' => 1,
+    'K' => 2**10,
+    'M' => 2**20,
+    'G' => 2**30
+  }
 
-comps = []
+  comps.sort! do |a, b|
+    (b[0] * unit_to_mult[b[1]]) <=> (a[0] * unit_to_mult[a[1]])
+  end
 
-duout.each do |l|
-  l =~ /\s*(\d+(\.\d+)?)(\w)\s+(.*)$/
-  size = $1
-  unit = $3
-  path = $4
-  comps << [size.to_f, unit, path]
-end
+  BLACK = "\033[30m"
+  RED = "\033[31m"
+  RED_BLINK = "\033[5;31m"
+  GREEN = "\033[32m"
+  YELLOW = "\033[33m"
+  BLUE = "\033[34m"
+  MAGENTA = "\033[35m"
+  CYAN = "\033[36m"
+  WHITE = "\033[37m"
+  RESET_COLOR = "\033[0m"
 
-unit_to_mult = {
-  'B' => 1,
-  'K' => 2**10,
-  'M' => 2**20,
-  'G' => 2**30
-}
+  if color_highlighting
+    comps.each do |(size,unit,path)|
+      case unit
+      when 'G'
+        output_color = RED 
+      when 'M'
+        output_color = YELLOW
+      when 'K'
+        output_color = CYAN 
+      when 'B'
+        output_color = GREEN 
+      else 
+        output_color = BLACK 
+      end
 
-comps.sort! do |a, b|
-  (b[0] * unit_to_mult[b[1]]) <=> (a[0] * unit_to_mult[a[1]])
-end
-
-BLACK = "\033[30m"
-RED = "\033[31m"
-RED_BLINK = "\033[5;31m"
-GREEN = "\033[32m"
-YELLOW = "\033[33m"
-BLUE = "\033[34m"
-MAGENTA = "\033[35m"
-CYAN = "\033[36m"
-WHITE = "\033[37m"
-RESET_COLOR = "\033[0m"
-
-if color_highlighting
-  comps.each do |(size,unit,path)|
-    case unit
-    when 'G'
-      output_color = RED 
-    when 'M'
-      output_color = YELLOW
-    when 'K'
-      output_color = CYAN 
-    when 'B'
-      output_color = GREEN 
-    else 
-      output_color = BLACK 
+      printf("%s%10.1f%s %s%s\n",output_color,size,unit,path,RESET_COLOR)
     end
-
-    printf( "%s%10.1f%s %s%s\n",output_color, size, unit, path,RESET_COLOR)
+  else
+    comps.each do |(size,unit,path)|
+      printf("%10.1f%s %s\n",size,unit,path)
+    end
   end
+
 else
-  comps.each do |(size,unit,path)|
-    printf( "%10.1f%s %s\n",size, unit, path)
+  duout.each do |l|
+    puts l 
   end
 end
