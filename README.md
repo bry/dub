@@ -28,9 +28,12 @@ dub is du with -h human readable output sorted by size. Compare:
 
 ## DEPLOY
   0. Ensure /usr/local/bin is in your PATH variable
-    > echo $PATH
+    
+    `> echo $PATH`
+  
   1. Copy 'dub' to /usr/local/bin
-    > sudo cp dub /usr/local/bin
+
+    `> sudo cp dub /usr/local/bin`
 
 ## SYNOPSIS
      du [-H | -L | -P] [-a | -s | -d depth] [-c] [-h | -k | -m | -g] [-x]
