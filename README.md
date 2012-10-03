@@ -22,7 +22,7 @@ dub is du with -h human readable output sorted by size. Compare:
          673.0M ./Work
            0.0B ./Colloquy Transcripts
 
-## SCRIPT COMPATABILITY
+## SCRIPT COMPATIBILITY
   - Mac OS X
   - Ruby 1.8.7
 
